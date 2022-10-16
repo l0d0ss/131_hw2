@@ -53,6 +53,11 @@ abaloneTest <- training(abaloneSplit)
 
 ## Question 3
 
-```{r}
+We shouldn't use rings to predict age since you have to open (kill) the abalone to count the number of rings it has. We don't want to kill the abalone in order to predict how old it is.
 
+Instead, we will create interactions between the other predictors to predict an abalone's age.
+
+```{r}
+abaloneAgeRecipe <-
+  recipe(age ~ ., data=abaloneTrain)
 ```
