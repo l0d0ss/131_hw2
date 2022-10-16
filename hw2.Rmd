@@ -40,14 +40,19 @@ The distribution of age seems *approximately* normal, skewed right.
 
 ## Question 2
 
-
-
 ```{r}
 # split into training and testing data
 
+# stratified on type since type I will have lower age than M or F
 abaloneSplit <- abalonedf %>%
   initial_split(prop = 0.8, strata = "type")
 
 abaloneTrain <- training(abaloneSplit)
 abaloneTest <- training(abaloneSplit)
+```
+
+## Question 3
+
+```{r}
+
 ```
