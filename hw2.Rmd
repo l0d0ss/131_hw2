@@ -1,0 +1,48 @@
+---
+title: "PSTAT 131 Homework 2"
+author: "Katlyn Shaw"
+date: "10/15/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# load packages
+library(tidyverse)
+library(tidymodels)
+# set seed
+set.seed(12345)
+```
+
+
+
+
+## Question 1
+
+```{r}
+
+# read data
+abalonedf <- read.csv("abalone.csv")
+
+
+# add age column
+abalonedf$age <- abalonedf$rings + 1.5
+
+# histogram
+ggplot(abalonedf, aes(age)) + geom_histogram(bins=30)
+
+# qqplot
+ggplot(abalonedf) + geom_qq(aes(sample=age))
+
+```
+The distribution of age seems *approximately* normal, skewed right.
+
+## Question 2
+
+```{r}
+# split into training and testing data
+
+abaloneSplit <- abalonedf %>%
+  initial_split()
+```
