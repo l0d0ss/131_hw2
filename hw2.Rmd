@@ -40,9 +40,14 @@ The distribution of age seems *approximately* normal, skewed right.
 
 ## Question 2
 
+
+
 ```{r}
 # split into training and testing data
 
 abaloneSplit <- abalonedf %>%
-  initial_split()
+  initial_split(prop = 0.8, strata = "type")
+
+abaloneTrain <- training(abaloneSplit)
+abaloneTest <- training(abaloneSplit)
 ```
