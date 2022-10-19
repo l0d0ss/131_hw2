@@ -57,7 +57,28 @@ We shouldn't use rings to predict age since you have to open (kill) the abalone 
 
 Instead, we will create interactions between the other predictors to predict an abalone's age.
 
+Since "type" is a categorical predictor, we will dummy-code for these predictors.
+
+Then, using step_interact, we will create interactions between 
+  type and shucked_weight (int1), 
+  longest_shell and diameter (int2), 
+  and shucked_weight and shell_weight (int3).
+
 ```{r}
 abaloneAgeRecipe <-
-  recipe(age ~ ., data=abaloneTrain)
+  recipe(age ~ ., data=abaloneTrain) %>%
+  step_dummy(all_nominal(), -all_outcomes()) %>% # creates dummy variables for type
+  step_normalize(all_predictors(), -all_nominal()) # centers and scales all numeric predictors
+
+int1 <- abaloneAgeRecipe %>%
+  step_interact(terms = ~ starts_with("type"):shucked_weight) %>%
+  step_center()
+
+int2 <- abaloneAgeRecipe %>%
+  step_interact(terms = ~ longest_shell:diameter)
+
+int3 <- abaloneAgeRecipe %>%
+  step_interact(terms = ~ shucked_weight:shell_weight)
 ```
+
+## Question 4
