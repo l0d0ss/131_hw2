@@ -75,31 +75,24 @@ abaloneAgeRecipe <-
            viscera_weight +
            shell_weight, data=abaloneTrain) %>%
   step_dummy(all_nominal(), -all_outcomes()) %>% # creates dummy variables for type
-  step_normalize(all_predictors(), -all_nominal()) # centers and scales all numeric predictors
+  step_normalize(all_predictors(), -all_nominal()) %>% # centers and scales all numeric predictors
+  step_interact(terms = ~ starts_with("type"):shucked_weight + longest_shell:diameter + shucked_weight:shell_weight)
 
-int1 <- abaloneAgeRecipe %>%
-  step_interact(terms = ~ starts_with("type"):shucked_weight) %>%
-  step_center()
-
-int2 <- abaloneAgeRecipe %>%
-  step_interact(terms = ~ longest_shell:diameter)
-
-int3 <- abaloneAgeRecipe %>%
-  step_interact(terms = ~ shucked_weight:shell_weight)
 ```
 
 ## Question 4
 
 ```{r}
-lm_model <- linear_reg() %>% 
+lmModel <- linear_reg() %>% 
   set_engine("lm")
 ```
 
 ## Question 5
 
 ```{r}
-lm_wflow <- workflow() %>% 
+lmWflow <- workflow() %>% 
   add_model(lm_model) %>% 
-  add_recipe()
-
+  add_recipe(abaloneAgeRecipe)
 ```
+
+## Question 6
