@@ -66,7 +66,14 @@ Then, using step_interact, we will create interactions between
 
 ```{r}
 abaloneAgeRecipe <-
-  recipe(age ~ ., data=abaloneTrain) %>%
+  recipe(age ~ type + 
+           longest_shell + 
+           diameter + 
+           height + 
+           whole_weight +
+           shucked_weight +
+           viscera_weight +
+           shell_weight, data=abaloneTrain) %>%
   step_dummy(all_nominal(), -all_outcomes()) %>% # creates dummy variables for type
   step_normalize(all_predictors(), -all_nominal()) # centers and scales all numeric predictors
 
@@ -82,3 +89,17 @@ int3 <- abaloneAgeRecipe %>%
 ```
 
 ## Question 4
+
+```{r}
+lm_model <- linear_reg() %>% 
+  set_engine("lm")
+```
+
+## Question 5
+
+```{r}
+lm_wflow <- workflow() %>% 
+  add_model(lm_model) %>% 
+  add_recipe()
+
+```
