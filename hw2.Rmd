@@ -74,8 +74,8 @@ abaloneAgeRecipe <-
            shucked_weight +
            viscera_weight +
            shell_weight, data=abaloneTrain) %>%
-  step_dummy_multi_choice(all_nominal_predictors()) %>% # creates dummy variables for type
-  step_normalize(all_predictors(), -all_nominal()) %>% # centers and scales all numeric predictors
+  step_dummy_multi_choice(starts_with("type")) %>% # creates dummy variables for type
+  step_normalize(all_predictors(), -age) %>% # centers and scales non-age predictors
   step_interact(terms = ~ starts_with("type"):shucked_weight + longest_shell:diameter + shucked_weight:shell_weight)
 
 ```
@@ -97,10 +97,15 @@ lmWflow <- workflow() %>%
 
 ## Question 6
 
+```{r}
+predictThis <- data.frame(type="F", longest_shell=0.50, diameter=0.10, height=0.30, whole_weight=4, shucked_weight=1, viscera_weight=2, shell_weight=1, rings=0, age=0) %>% 
+  print()
+```
+
 
 ```{r}
 lmFit <- fit(lmWflow, abaloneTrain)
-abaloneTrainRes <- predict(lmFit, new_data = abaloneTrain %>% select(-rings))
+abaloneTrainRes <- predict(lmFit, new_data = predictThis %>% select(-rings))
 abaloneTrainRes %>%
   head()
 
