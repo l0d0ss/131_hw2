@@ -96,3 +96,7 @@ lmWflow <- workflow() %>%
 ```
 
 ## Question 6
+
+```{r}
+lmFit <- fit(lmWflow, abaloneTrain)
+```
