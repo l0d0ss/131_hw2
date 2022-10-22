@@ -129,3 +129,10 @@ head(abaloneTrainResBind)
 ```{r}
 assess(abaloneTrainResBind, truth = age, estimate = .pred)
 ```
+
+The statistics for our abalone age prediction model are as follows:
+- $R^2=0.5555875$
+- $RMSE = 2.1404089$
+- $MAE = 1.5343832$
+
+Our $R^2=0.5555875$ statistic reveals that 0.5555875 of the variability observed in the target variable is explained by the regression model.
