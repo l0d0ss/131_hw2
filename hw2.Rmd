@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # load packages
 library(tidyverse)
 library(tidymodels)
+library(yardstick)
 # set seed
 set.seed(12345)
 ```
@@ -74,7 +75,7 @@ abaloneAgeRecipe <-
            shucked_weight +
            viscera_weight +
            shell_weight, data=abaloneTrain) %>%
-  step_dummy_multi_choice(starts_with("type")) %>% # creates dummy variables for type
+  step_dummy_multi_choice(all_nominal_predictors()) %>% # creates dummy variables for type
   step_normalize(all_predictors(), -age) %>% # centers and scales non-age predictors
   step_interact(terms = ~ starts_with("type"):shucked_weight + longest_shell:diameter + shucked_weight:shell_weight)
 
@@ -98,15 +99,33 @@ lmWflow <- workflow() %>%
 ## Question 6
 
 ```{r}
-predictThis <- data.frame(type="F", longest_shell=0.50, diameter=0.10, height=0.30, whole_weight=4, shucked_weight=1, viscera_weight=2, shell_weight=1, rings=0, age=0) %>% 
-  print()
+predictThis <- data.frame(type="F", longest_shell=0.50, diameter=0.10, height=0.30, whole_weight=4, shucked_weight=1, viscera_weight=2, shell_weight=1)
+
+lmFit <- fit(lmWflow, abaloneTrain)
+abalonePredThis <- predict(lmFit, new_data = predictThis)
+abalonePredThis %>%
+  head()
+
 ```
+(I'm getting an error "Warning: prediction from a rank-deficient fit may be misleading", not sure why -- age and rings shouldn't be in my recipe)
+
+The predicted age of a hypothetical female abalone with longest_shell = 0.50, diameter = 0.10, height = 0.30, whole_weight = 4, shucked_weight = 1, viscera_weight = 2, shell_weight = 1 is 22.14042
+
+## Question 7
+```{r}
+assess <- metric_set(rsq, rmse, mae)
+abaloneTrainRes <- predict(lmFit, new_data = abaloneTrain %>% select(-rings, -age))
+abaloneTrainRes %>%
+  head()
+```
+(same error)
 
 
 ```{r}
-lmFit <- fit(lmWflow, abaloneTrain)
-abaloneTrainRes <- predict(lmFit, new_data = predictThis %>% select(-rings))
-abaloneTrainRes %>%
-  head()
+abaloneTrainResBind <- bind_cols(abaloneTrainRes, abaloneTrain %>% select(age))
+head(abaloneTrainResBind)
+```
 
+```{r}
+assess(abaloneTrainResBind, truth = age, estimate = .pred)
 ```
