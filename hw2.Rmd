@@ -99,4 +99,8 @@ lmWflow <- workflow() %>%
 
 ```{r}
 lmFit <- fit(lmWflow, abaloneTrain)
+abaloneTrainRes <- predict(lmFit, new_data = abaloneTrain %>% select(-rings))
+abaloneTrainRes %>%
+  head()
+
 ```
